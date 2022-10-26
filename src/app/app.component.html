@@ -23,7 +23,11 @@
         <div>
           <label id="cidadeOrigem">
             Cidade de origem
-            <select formControlName="cidadeOrigem" name="cidadeOrigem">
+            <select
+              formControlName="cidadeOrigem"
+              name="cidadeOrigem"
+              (ngModelChange)="setValuesOrigem($event)"
+            >
               <option *ngFor="let c of cidadesOrigem" [ngValue]="c.city">
                 {{ c.city }}
               </option>
@@ -48,7 +52,11 @@
         <div>
           <label id="cidadeDestino">
             Cidade de destino
-            <select formControlName="cidadeDestino" name="cidadeDestino">
+            <select
+              formControlName="cidadeDestino"
+              name="cidadeDestino"
+              (ngModelChange)="setValuesDestino($event)"
+            >
               <option *ngFor="let c of cidadesDestino" [ngValue]="c.city">
                 {{ c.city }}
               </option>
@@ -59,14 +67,33 @@
         <div>
           <span>Adultos</span>
           <div>
-            <button (click)="subtrairValor('adultos')">-</button>
-            <input type="text" formControlName="adultos" />
-            <button (click)="adicionarValor('adultos')">+</button>
+            <button
+              (click)="subtrairValor('adultos')"
+              [disabled]="adultos === 0"
+            >
+              -
+            </button>
+            <input
+              type="text"
+              formControlName="adultos"
+              [disabled]="adultos < 0"
+            />
+            <button
+              (click)="adicionarValor('adultos')"
+              [disabled]="adultos < 0"
+            >
+              +
+            </button>
           </div>
 
           <span>Crianças</span>
           <div>
-            <button (click)="subtrairValor('criancas')">-</button>
+            <button
+              (click)="subtrairValor('criancas')"
+              [disabled]="adultos === 0"
+            >
+              -
+            </button>
             <input type="text" formControlName="criancas" />
 
             <button (click)="adicionarValor('criancas')">+</button>
@@ -79,7 +106,7 @@
             id="economica"
             name="classe"
             formControlName="classe"
-            value="economica"
+            value="Econômica"
           />
           <label for="economica">Econômica</label>
 
@@ -88,13 +115,20 @@
             id="executiva"
             name="classe"
             formControlName="classe"
-            value="executiva"
+            value="Executiva"
           />
           <label for="executiva">Executiva</label>
         </div>
         <div>
-          <label for="">
-            <input type="range" />
+          <label for="milhas">
+            <input
+              type="range"
+              id="milhas"
+              min="0"
+              max="30000"
+              step="1"
+              formControlName="milhas"
+            />
           </label>
         </div>
       </form>
@@ -111,19 +145,29 @@
           myForm.get("cidadeDestino")?.value
         }})
       </p>
-      <p>Distância:</p>
+
+      <div *ngIf="myForm.errors?.['errorCitiesOriginDestiny']" class="red">
+        A cidade de destino deve ser diferente que a origem.
+      </div>
+
+      <p>Distância: {{ distanciaViagem }}</p>
       <p>
-        Adultoss: {{ myForm.get("adultos")?.value }}, Crianças:
+        Adultos: {{ myForm.get("adultos")?.value }}, Crianças:
         {{ myForm.get("criancas")?.value }}
       </p>
 
+      <div *ngIf="myForm.errors?.['errorMinAdults']" class="red">
+        Deve ter no mínimo 1 adulto.
+      </div>
+
       <p>Tipo de voo: {{ myForm.get("classe")?.value }}</p>
 
-      <p>por adulto</p>
-      <p>por crianca:</p>
-      <p>Milhas:</p>
-      <p>Valor abatido por milhas:</p>
-      <p>Total:</p>
+      <p>{{ valorAdulto }} por adulto</p>
+      <p>{{ valorCrianca }} por criança</p>
+
+      <p>Milhas: {{ myForm.get("milhas")?.value }}</p>
+      <p>Valor abatido por milhas: {{ valorAbatidoMilhas }}</p>
+      <p>Total: {{ totalViagem }}</p>
     </div>
   </div>
 </div>

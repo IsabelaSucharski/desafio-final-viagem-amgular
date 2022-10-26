@@ -16,3 +16,8 @@
   width: 100%;
   display: block;
 }
+
+.red {
+  color: red;
+  font-size: 10px;
+}
