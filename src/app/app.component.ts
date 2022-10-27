@@ -68,7 +68,7 @@ export class AppComponent implements OnInit {
       classe: new FormControl('Econômica'),
       adultos: new FormControl(1),
       criancas: new FormControl(0),
-      milhas: new FormControl(15000),
+      milhas: new FormControl(30000),
     },
     {
       validators: [this.validateMinAdults, this.validateCitiesOriginDestiny],
@@ -241,43 +241,39 @@ export class AppComponent implements OnInit {
   };
 
   setPrecoViagem = () => {
-    let valorPassagemAdulto = 0;
-    let valorPassagemCrianca = 0;
     if (
       this.myForm.get('paisOrigem')?.value ===
       this.myForm.get('paisDestino')?.value
     ) {
-      console.log('1');
-      valorPassagemAdulto = this.distanciaViagem * 0.3;
-      valorPassagemCrianca = this.distanciaViagem * 0.15;
+      this.valorAdulto = this.distanciaViagem * 0.3;
+      this.valorCrianca = this.distanciaViagem * 0.15;
     } else {
-      console.log('2');
-
-      valorPassagemAdulto = this.distanciaViagem * 0.5;
-      valorPassagemCrianca = this.distanciaViagem * 0.25;
+      this.valorAdulto = this.distanciaViagem * 0.5;
+      this.valorCrianca = this.distanciaViagem * 0.25;
     }
 
     if (this.myForm.get('classe')?.value === 'Executiva') {
-      console.log('3');
-
-      valorPassagemAdulto = valorPassagemAdulto * 1.8;
-      valorPassagemCrianca = valorPassagemCrianca * 1.4;
+      this.valorAdulto = this.valorAdulto * 1.8;
+      this.valorCrianca = this.valorCrianca * 1.4;
     }
 
     if (Number(this.myForm.get('milhas')?.value) > 0) {
-      console.log('4');
-
-      let valorAbatido = Number(this.myForm.get('milhas')?.value) * 0.02;
-      this.valorAbatidoMilhas = valorAbatido.toLocaleString();
+      this.valorAbatidoMilhas = Number(this.myForm.get('milhas')?.value) * 0.02;
     }
 
-    this.valorAdulto = valorPassagemAdulto.toLocaleString();
-    this.valorCrianca = valorPassagemCrianca.toLocaleString();
+    if (this.criancas > 0) {
+      this.totalViagem =
+        this.adultos * this.valorAdulto + this.criancas * this.valorCrianca;
+    } else {
+      this.totalViagem = this.adultos * this.valorAdulto;
+    }
 
-    this.totalViagem = (
-      this.adultos * valorPassagemAdulto +
-      this.criancas * valorPassagemCrianca -
-      this.valorAbatidoMilhas
-    ).toLocaleString();
+    if (this.valorAbatidoMilhas > 0) {
+      this.totalViagem = this.totalViagem - this.valorAbatidoMilhas;
+    }
+  };
+
+  range = (value: any) => {
+    this.valorAbatidoMilhas = 0;
   };
 }

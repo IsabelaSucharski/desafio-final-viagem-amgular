@@ -125,9 +125,10 @@
               type="range"
               id="milhas"
               min="0"
-              max="30000"
+              max="50000"
               step="1"
               formControlName="milhas"
+              (ngModelChange)="(range)"
             />
           </label>
         </div>
@@ -163,7 +164,10 @@
       <p>Tipo de voo: {{ myForm.get("classe")?.value }}</p>
 
       <p>{{ valorAdulto }} por adulto</p>
-      <p>{{ valorCrianca }} por criança</p>
+
+      <p *ngIf="criancas > 0 && totalViagem > 0">
+        {{ valorCrianca }} por criança
+      </p>
 
       <p>Milhas: {{ myForm.get("milhas")?.value }}</p>
       <p>Valor abatido por milhas: {{ valorAbatidoMilhas }}</p>
